@@ -1,8 +1,8 @@
 # icecaps-saving-project
-Perfect opportunity to sign up for a newsletter and help saving our planet
+Perfect opportunity to sign up for a nice newsletter and help saving our planet!
 
 
-## Project setup
+## Some useful commands to get this fantastic project up and running
 ```
 npm install
 ```
@@ -16,11 +16,3 @@ npm run serve
 ```
 npm run build
 ```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
