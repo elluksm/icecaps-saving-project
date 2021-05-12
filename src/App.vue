@@ -1,18 +1,18 @@
 <template>
   <div id="app">
-    <SignUpForm  msg="Welcome to Your Vue.js App"/>
+    <SignUpForm/>
   </div>
 </template>
 
 <script>
-import SignUpForm from './components/SignUpForm.vue'
+import SignUpForm from "./components/SignUpForm.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     SignUpForm
   }
-}
+};
 </script>
 
 <style>
@@ -22,6 +22,5 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 </style>
