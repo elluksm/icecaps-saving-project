@@ -7,26 +7,11 @@
     </p>
 
     <b-form @submit="onSubmit">
-      <b-form-group label="Name:" label-for="name" label-cols-sm="3">
-        <b-form-input id="name" v-model="form.name" placeholder="Enter your name" required></b-form-input>
+      <b-form-group>
+        <b-form-input id="name" v-model="form.name" placeholder="Name" required></b-form-input>
       </b-form-group>
 
-      <b-form-group
-        label="Email address:"
-        label-for="email"
-        description="We will send the newsletter to this email (but don't worry - we'll never share your email with anyone else)."
-        label-cols-sm="3"
-        class="bottom-seperator">
-        <b-form-input
-          id="email"
-          v-model="form.email"
-          type="email"
-          placeholder="Enter your email"
-          required>
-        </b-form-input>
-      </b-form-group>
-
-      <b-form-group label="Gender" label-cols-sm="3" class="bottom-seperator">
+      <b-form-group class="bottom-seperator">
         <b-form-radio-group
           v-model="form.gender"
           :options="options"
@@ -36,7 +21,19 @@
         </b-form-radio-group>
       </b-form-group>
 
-      <b-form-group label="How green do you think is your lifestyle?" class="bottom-seperator">
+      <b-form-group
+        description="We will send the newsletter to this email (but don't worry - we'll never share your email with anyone else)."
+        class="bottom-seperator">
+        <b-form-input
+          id="email"
+          v-model="form.email"
+          type="email"
+          placeholder="Email"
+          required>
+        </b-form-input>
+      </b-form-group>
+
+      <b-form-group label="How Green is your Life?" class="bottom-seperator">
         <b-form-rating v-model="form.stars" variant="primary"></b-form-rating>
       </b-form-group>
 
@@ -44,35 +41,51 @@
         label="Amount for donation to help save our planet:"
         label-for="amount"
         class="bottom-seperator">
-        <b-form-input
-          id="amount"
-          v-model="form.amount"
-          type="number"
-          placeholder="Enter amount to donate"
-          required>
-        </b-form-input>
+        <b-input-group prepend="€" append="monthly">
+          <b-form-input
+            id="amount"
+            v-model.number="form.amount"
+            min="1"
+            type="number"
+            placeholder="Enter amount to donate"
+            :state="amountValidation"
+            required>
+          </b-form-input>
+        </b-input-group>
+          <b-form-invalid-feedback :state="amountValidation">
+            Polar bears are crying about donations less then 1€..
+          </b-form-invalid-feedback>
 
         <b-form-checkbox
-          v-model="form.skipSubscription"
-          name="skipSubscription">
+          v-model="form.oneTimePurchase"
+          name="oneTimePurchase">
           I hate polar bears -- select this to opt out of a recurring donation
         </b-form-checkbox>
       </b-form-group>
 
+      <b-card bg-variant="light" header="Summary" class="bottom-seperator">
+        <pre class="m-0">{{ form }}</pre>
+        <p class="info">{{ form.oneTimePurchase ? "*Only one newsletter" : "*Monthly Subscription"}}</p>
+        <p>We will charge you {{ form.amount }} € and send fantastic newsletter on {{ nextNewsletterDate }}!</p>
+        <p v-if="!form.oneTimePurchase">We plan to send out the newsletter on the first workday of every month.</p>
+      </b-card>
+
+
       <b-form-group>
-        <b-form-checkbox v-model="form.checked" name="terms">I accept the terms and conditions</b-form-checkbox>
+        <b-form-checkbox v-model="form.termsAccepted" name="terms" :state="termsAcceptedValidation">
+          I accept the terms and conditions
+        </b-form-checkbox>
+        <b-form-invalid-feedback :state="termsAcceptedValidation">You need to accept all terms to help save the icecups!</b-form-invalid-feedback>
       </b-form-group>
 
-      <b-button type="submit" variant="primary">Submit</b-button>
+      <b-button type="submit" variant="primary" class="bottom-seperator">Submit</b-button>
     </b-form>
-
-    <b-card class="mt-3" header="Summary">
-      <pre class="m-0">{{ form }}</pre>
-    </b-card>
   </div>
 </template>
 
 <script>
+import { getNextFirstWorkdayOfMonth } from "../common/helperMethods.js";
+
 export default {
   name: "SignUpForm",
   data() {
@@ -82,9 +95,9 @@ export default {
         name: "",
         gender: "",
         stars: 1,
-        amount: 20,
-        skipSubscription: false,
-        checked: true
+        amount: 25.00,
+        oneTimePurchase: false,
+        termsAccepted: true
       },
       options: [
         { text: "Female", value: "female" },
@@ -92,6 +105,17 @@ export default {
         { text: "Other", value: "other" }
       ]
     };
+  },
+  computed: {
+    amountValidation() {
+      return this.form.amount >= 1;
+    },
+    termsAcceptedValidation() {
+      return this.form.termsAccepted;
+    },
+    nextNewsletterDate() {
+      return getNextFirstWorkdayOfMonth(new Date());
+  }
   },
   methods: {
     onSubmit(event) {
@@ -106,7 +130,7 @@ export default {
       this.form.email = "";
       this.form.name = "";
       this.form.gender = "";
-      this.form.skipSubscription = false;
+      this.form.oneTimePurchase = false;
       this.form.stars = 1;
     }
   }
@@ -116,8 +140,8 @@ export default {
 <style scoped>
 .signup-form {
   margin: auto;
-  margin-top: 60px;
-  width: 60%;
+  margin-top: 50px;
+  width: 50%;
 }
 
 .bottom-seperator {
