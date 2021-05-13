@@ -4,18 +4,19 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
 import SignUpForm from "./components/SignUpForm.vue";
 
-export default {
-  name: "App",
+@Component({
   components: {
-    SignUpForm
-  }
-};
+    SignUpForm,
+  },
+})
+export default class App extends Vue {}
 </script>
 
-<style>
+<style lang="less">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

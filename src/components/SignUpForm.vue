@@ -1,14 +1,18 @@
 <template>
   <div class="signup-form">
     <h1>Save The Icecaps Inc Newsletter</h1>
-    <p
-      class="bottom-seperator">
+    <p class="bottom-seperator">
       Monthly newsletter, delivered straight to your home, with most recent climate change information and current events. It will be fun!
     </p>
 
     <b-form @submit="onSubmit">
       <b-form-group>
-        <b-form-input id="name" v-model="form.name" placeholder="Name" required></b-form-input>
+        <b-form-input
+          id="name"
+          v-model="form.name"
+          placeholder="Name"
+          required
+        ></b-form-input>
       </b-form-group>
 
       <b-form-group class="bottom-seperator">
@@ -34,7 +38,7 @@
       </b-form-group>
 
       <b-form-group label="How Green is your Life?" class="bottom-seperator">
-        <b-form-rating v-model="form.stars" variant="primary"></b-form-rating>
+        <b-form-rating v-model="form.levelOfGreenLife" variant="primary"></b-form-rating>
       </b-form-group>
 
       <b-form-group
@@ -52,30 +56,37 @@
             required>
           </b-form-input>
         </b-input-group>
-          <b-form-invalid-feedback :state="amountValidation">
-            Polar bears are crying about donations less then 1€..
-          </b-form-invalid-feedback>
+        <b-form-invalid-feedback :state="amountValidation">
+          Polar bears are crying about donations less then 1€..
+        </b-form-invalid-feedback>
 
-        <b-form-checkbox
-          v-model="form.oneTimePurchase"
-          name="oneTimePurchase">
+        <b-form-checkbox v-model="form.oneTimePurchase" name="oneTimePurchase">
           I hate polar bears -- select this to opt out of a recurring donation
         </b-form-checkbox>
       </b-form-group>
 
       <b-card bg-variant="light" header="Summary" class="bottom-seperator">
-        <pre class="m-0">{{ form }}</pre>
         <p class="info">{{ form.oneTimePurchase ? "*Only one newsletter" : "*Monthly Subscription"}}</p>
-        <p>We will charge you {{ form.amount }} € and send fantastic newsletter on {{ nextNewsletterDate }}!</p>
-        <p v-if="!form.oneTimePurchase">We plan to send out the newsletter on the first workday of every month.</p>
+        <p>
+          We will charge you {{ form.amount }} € and send fantastic newsletter on {{ nextNewsletterDate }}!
+        </p>
+        <p v-if="!form.oneTimePurchase">
+          We plan to send out the newsletter on the first workday of every month.
+        </p>
       </b-card>
 
 
       <b-form-group>
-        <b-form-checkbox v-model="form.termsAccepted" name="terms" :state="termsAcceptedValidation">
+        <b-form-checkbox
+          v-model="form.termsAccepted"
+          name="terms"
+          required
+          :state="termsAcceptedValidation">
           I accept the terms and conditions
         </b-form-checkbox>
-        <b-form-invalid-feedback :state="termsAcceptedValidation">You need to accept all terms to help save the icecups!</b-form-invalid-feedback>
+        <b-form-invalid-feedback :state="termsAcceptedValidation">
+          You need to accept all terms to help save the icecups!
+          </b-form-invalid-feedback>
       </b-form-group>
 
       <b-button type="submit" variant="primary" class="bottom-seperator">Submit</b-button>
@@ -83,61 +94,62 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Prop, Vue } from "vue-property-decorator";
 import { getNextFirstWorkdayOfMonth } from "../common/helperMethods.js";
+import { UserSignupInfo } from "../types/User.ts";
 
-export default {
-  name: "SignUpForm",
+@Component
+export default class SignUpForm extends Vue {
+  form: UserSignupInfo = {
+    email: "",
+    name: "",
+    gender: "",
+    levelOfGreenLife: 1,
+    amount: 25.00,
+    oneTimePurchase: false,
+    termsAccepted: true,
+  };
+
   data() {
     return {
-      form: {
-        email: "",
-        name: "",
-        gender: "",
-        stars: 1,
-        amount: 25.00,
-        oneTimePurchase: false,
-        termsAccepted: true
-      },
       options: [
         { text: "Female", value: "female" },
         { text: "Male", value: "male" },
-        { text: "Other", value: "other" }
-      ]
+        { text: "Other", value: "other" },
+      ],
     };
-  },
-  computed: {
-    amountValidation() {
-      return this.form.amount >= 1;
-    },
-    termsAcceptedValidation() {
-      return this.form.termsAccepted;
-    },
-    nextNewsletterDate() {
-      return getNextFirstWorkdayOfMonth(new Date());
   }
-  },
-  methods: {
-    onSubmit(event) {
-      event.preventDefault();
 
-      // trying to get more donations
-      alert(
-        "Thank you very much - Polar bears are already dancing with joy! Do you want to send the newsletter also for your best friend? :) "
-      );
-
-      // reset form values (except the amount value)
-      this.form.email = "";
-      this.form.name = "";
-      this.form.gender = "";
-      this.form.oneTimePurchase = false;
-      this.form.stars = 1;
-    }
+  get amountValidation(): boolean {
+    return this.form.amount >= 1;
   }
-};
+  get termsAcceptedValidation(): boolean {
+    return this.form.termsAccepted;
+  }
+  get nextNewsletterDate(): string {
+    return getNextFirstWorkdayOfMonth(new Date());
+  }
+
+  onSubmit(event: any): void {
+    event.preventDefault();
+
+    // trying to get more donations
+    alert(
+      "Thank you very much - Polar bears are already dancing with joy! Do you want to send the newsletter also for your best friend? :) "
+    );
+
+    // reset form values (except the amount value)
+    this.form.email = "";
+    this.form.name = "";
+    this.form.gender = "";
+    this.form.oneTimePurchase = false;
+    this.form.levelOfGreenLife = 1;
+  }
+}
 </script>
 
-<style scoped>
+<style scoped lang="less">
 .signup-form {
   margin: auto;
   margin-top: 50px;
