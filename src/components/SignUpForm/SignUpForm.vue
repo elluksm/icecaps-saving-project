@@ -95,9 +95,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import { getNextFirstWorkdayOfMonth } from "../common/helperMethods.js";
-import { UserSignupInfo } from "../types/User.ts";
+import { Component, Vue } from "vue-property-decorator";
+import { getNextFirstWorkdayOfMonth } from "../../common/helperMethods.ts";
+import { UserSignupInfo } from "../../types/User.ts";
 
 @Component
 export default class SignUpForm extends Vue {

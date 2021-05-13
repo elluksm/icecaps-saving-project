@@ -8,7 +8,7 @@ import {
   isPast,
 } from "date-fns";
 
-export function getNextFirstWorkdayOfMonth(givenDate) {
+export function getNextFirstWorkdayOfMonth(givenDate: Date): string {
   // find first workday of this month
   let date = setDate(givenDate, 1);
 

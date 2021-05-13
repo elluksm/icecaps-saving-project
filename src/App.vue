@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import SignUpForm from "./components/SignUpForm.vue";
+import SignUpForm from "./components/SignUpForm/SignUpForm.vue";
 
 @Component({
   components: {
